@@ -1,3 +1,7 @@
+use std::sync::{Arc, Mutex};
+use eframe::wasm_bindgen::JsValue;
+use wasm_bindgen_futures::spawn_local;
+
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -6,6 +10,7 @@ pub struct KolabApp {
 
     #[serde(skip)]
     value: f32,
+    message: Arc<Mutex<String>>
 }
 
 impl Default for KolabApp {
@@ -14,6 +19,7 @@ impl Default for KolabApp {
             // Example stuff:
             label: "Hello from Kolab!".to_owned(),
             value: 2.7,
+            message: Arc::new(Mutex::new(String::from("Waiting for message...")))
         }
     }
 }
@@ -51,7 +57,23 @@ impl eframe::App for KolabApp {
             ui.heading("Welcome to Kolab!");
 
             if ui.button("Ping server").clicked() {
-                log::warn!("Ping server needs to be implemented...");
+                // TODO: Wipish just to test it
+                let message_clone = self.message.clone();
+                let ctx_clone = ctx.clone();
+                spawn_local(async move {
+                    if let Ok(resp) = make_http_request().await {
+                        {
+                            *message_clone.lock().unwrap() = resp;
+                        }
+
+                        ctx_clone.request_repaint(); // Force UI update after async completes
+                    }
+                });
+            }
+
+            // Scoped to unlock the mutex
+            {
+                ui.label(format!("From server: {:?}", self.message.lock()));
             }
 
             ui.separator();
@@ -66,4 +88,15 @@ impl eframe::App for KolabApp {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
         eframe::set_value(storage, eframe::APP_KEY, self);
     }
+}
+
+pub async fn make_http_request() ->  Result<String, JsValue> {
+    let body = reqwest::get("http://127.0.0.1:9090/")
+        .await?
+        .text()
+        .await?;
+
+    println!("Received: {}", body);
+
+    Ok(body)
 }

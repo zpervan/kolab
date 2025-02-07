@@ -12,8 +12,8 @@
     <!-- config for our rust wasm binary. go to https://trunkrs.dev/assets/#rust for more customization -->
     
 <script type="module">
-import init, * as bindings from '/frontend-757e74be8ce8850a.js';
-const wasm = await init({ module_or_path: '/frontend-757e74be8ce8850a_bg.wasm' });
+import init, * as bindings from '/frontend-88879050bbda4f90.js';
+const wasm = await init({ module_or_path: '/frontend-88879050bbda4f90_bg.wasm' });
 
 
 window.wasmBindings = bindings;
@@ -127,7 +127,7 @@ dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
             }
         }
     </style>
-<link rel="modulepreload" href="/frontend-757e74be8ce8850a.js" crossorigin="anonymous" integrity="sha384-8VfuWb8FPyLW385beLG8axVumOQ/JvI7C86MxIZPQcowW50W3qMAEUofNJzE73m3"><link rel="preload" href="/frontend-757e74be8ce8850a_bg.wasm" crossorigin="anonymous" integrity="sha384-HOXVH7H2mBhoLo2kiQYd7yCAfGDFqZ3TZWhwCOP90INSB8cZWIlCZd9OmmTUM52N" as="fetch" type="application/wasm"></head>
+<link rel="modulepreload" href="/frontend-88879050bbda4f90.js" crossorigin="anonymous" integrity="sha384-c2SGh0Rx53y5a1Xdn8XlJhirkfLnMudmfDKDiDCD8EEgfE1UYZfGduu4w3K+9zRs"><link rel="preload" href="/frontend-88879050bbda4f90_bg.wasm" crossorigin="anonymous" integrity="sha384-azWgyVhaS51biad5p5cyfhuPgPZF5OkI4KnQtpYODrtTjUKjS4Ga30SCrhwGXVYe" as="fetch" type="application/wasm"></head>
 
 <body>
 <!-- The WASM code will resize the canvas dynamically -->

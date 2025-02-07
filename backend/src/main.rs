@@ -1,9 +1,7 @@
-use axum::{
-    routing::get, 
-    Router, Json
-};
-use tokio::net::TcpListener;
+use axum::{routing::get, Json, Router};
 use serde::Serialize;
+use tokio::net::TcpListener;
+use tower_http::cors::{Any, Cors, CorsLayer};
 
 #[derive(Serialize)]
 struct Message {
@@ -11,14 +9,22 @@ struct Message {
 }
 
 async fn hello_world() -> Json<Message> {
-    Json(Message { text: "Hello from Rust Backend!".to_string() })
+    let text = format!("From rust backend: {}", rand::random::<u8>());
+    Json(Message { text })
 }
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/", get(hello_world));
+    // TODO: Just a WIP step to check out the front and backend communication
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(Any)
+        .allow_headers(Any);
+
+    let app = Router::new().route("/", get(hello_world)).layer(cors);
 
     let listener = TcpListener::bind("127.0.0.1:9090").await.unwrap();
     println!("Server running at http://127.0.0.1:9090");
+
     axum::serve(listener, app).await.unwrap();
 }
