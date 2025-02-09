@@ -1,7 +1,5 @@
-mod application;
-
 use eframe::web_sys;
-use frontend::KolabApp;
+use frontend::application::KolabApp;
 
 #[cfg(target_arch = "wasm32")]
 fn main() {

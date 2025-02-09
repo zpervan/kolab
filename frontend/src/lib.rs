@@ -1,3 +1,2 @@
-mod application;
-
-pub use application::KolabApp;
+pub mod application;
+pub mod gui;

@@ -1,7 +1,7 @@
 use axum::{routing::get, Json, Router};
 use serde::Serialize;
 use tokio::net::TcpListener;
-use tower_http::cors::{Any, Cors, CorsLayer};
+use tower_http::cors::{Any, CorsLayer};
 
 #[derive(Serialize)]
 struct Message {
@@ -9,7 +9,7 @@ struct Message {
 }
 
 async fn hello_world() -> Json<Message> {
-    let text = format!("From rust backend: {}", rand::random::<u8>());
+    let text = format!("### Backend response: {}", rand::random::<u8>());
     Json(Message { text })
 }
 
