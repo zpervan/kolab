@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "${workspaceFolder}/backend/Cargo.toml",
+        "${workspaceFolder}/frontend/Cargo.toml"
+    ],
+    "rust-analyzer.cargo.target": "wasm32-unknown-unknown",
+}

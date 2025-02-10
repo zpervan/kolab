@@ -1,26 +1,23 @@
 use crate::gui;
+use crate::circuit;
 use std::sync::{Arc, Mutex};
+use egui::mutex::RwLock;
 use wasm_bindgen_futures::spawn_local;
 
 // TODO: Move to a common place
-// TODO: Add a component store
 /// We derive Deserialize/Serialize so we can persist app state on shutdown.
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct KolabApp {
-    label: String,
-
     #[serde(skip)]
-    value: f32,
-    pub(crate) message: Arc<Mutex<String>>,
+    pub components_store: Arc<RwLock<circuit::store::CircuitStore>>,
+    pub message: Arc<Mutex<String>>,
 }
 
 impl Default for KolabApp {
     fn default() -> Self {
         Self {
-            // Example stuff:
-            label: "Hello from Kolab!".to_owned(),
-            value: 2.7,
+            components_store: Arc::new(RwLock::new(circuit::store::CircuitStore::new())),
             message: Arc::new(Mutex::new(String::from("Waiting for message..."))),
         }
     }
@@ -45,9 +42,6 @@ impl KolabApp {
 impl eframe::App for KolabApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`, `Window` or `Area`.
-        // For inspiration and more examples, go to https://emilk.github.io/egui
-
         gui::top_menu_bar::show(ctx, self);
         gui::workspace::show(ctx, self);
     }

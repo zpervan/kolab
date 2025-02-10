@@ -1,6 +1,7 @@
 use serde_json::Value;
 use wasm_bindgen_futures::spawn_local;
 use crate::application::KolabApp;
+use crate::circuit;
 
 pub fn show(ctx: &egui::Context, app_state: &KolabApp) {
     egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
@@ -10,15 +11,21 @@ pub fn show(ctx: &egui::Context, app_state: &KolabApp) {
 
         ui.horizontal(|ui| {
             if ui.button("Resistor").clicked() {
-                log::info!("TODO: Implement Resistor functionality");
+                log::info!("Adding a resistor to the store");
+                let resistor = Box::new(circuit::Resistor::new());
+                app_state.components_store.write().upsert(resistor);
             }
 
             if ui.button("Capacitor").clicked() {
-                log::info!("TODO: Implement Capacitor functionality");
+                log::info!("Adding a capacitor to the store");
+                let capacitor = Box::new(circuit::Capacitor::new());
+                app_state.components_store.write().upsert(capacitor);
             }
 
             if ui.button("Inductor").clicked() {
-                log::info!("TODO: Implement Inductor functionality");
+                log::info!("Adding a inductor to the store");
+                let inductor = Box::new(circuit::Inductor::new());
+                app_state.components_store.write().upsert(inductor);
             }
 
             if ui.button("Source").clicked() {
