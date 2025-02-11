@@ -1,41 +1,29 @@
+use crate::circuit::actor::Actor;
+use crate::circuit::store::CircuitStore;
 use crate::gui;
-use crate::circuit;
-use std::sync::{Arc, Mutex};
 use egui::mutex::RwLock;
-use wasm_bindgen_futures::spawn_local;
+use std::any::Any;
+use std::cell::Cell;
+use std::sync::{Arc, Mutex};
 
 // TODO: Move to a common place
-/// We derive Deserialize/Serialize so we can persist app state on shutdown.
-#[derive(serde::Deserialize, serde::Serialize)]
-#[serde(default)]
 pub struct KolabApp {
-    #[serde(skip)]
-    pub components_store: Arc<RwLock<circuit::store::CircuitStore>>,
+    pub components_store: Arc<RwLock<CircuitStore>>,
+    pub gui_ctx: Arc<egui::Context>,
+    // TODO: Should be removed, just for testing
     pub message: Arc<Mutex<String>>,
-}
-
-impl Default for KolabApp {
-    fn default() -> Self {
-        Self {
-            components_store: Arc::new(RwLock::new(circuit::store::CircuitStore::new())),
-            message: Arc::new(Mutex::new(String::from("Waiting for message..."))),
-        }
-    }
+    pub active_actor: Cell<Option<Box<dyn Any>>>,
 }
 
 impl KolabApp {
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
-        // This is also where you can customize the look and feel of egui using
-        // `cc.egui_ctx.set_visuals` and `cc.egui_ctx.set_fonts`.
-
-        // Load previous app state (if any).
-        // Note that you must enable the `persistence` feature for this to work.
-        if let Some(storage) = cc.storage {
-            return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
+        Self {
+            components_store: Arc::new(RwLock::new(CircuitStore::new())),
+            message: Arc::new(Mutex::new(String::from("Waiting for message..."))),
+            active_actor: Cell::new(None),
+            gui_ctx: Arc::new(cc.egui_ctx.clone()),
         }
-
-        Default::default()
     }
 }
 
@@ -44,10 +32,5 @@ impl eframe::App for KolabApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         gui::top_menu_bar::show(ctx, self);
         gui::workspace::show(ctx, self);
-    }
-
-    /// Called by the frame work to save state before shutdown.
-    fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        eframe::set_value(storage, eframe::APP_KEY, self);
     }
 }

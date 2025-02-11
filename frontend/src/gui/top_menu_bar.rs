@@ -1,9 +1,13 @@
+use crate::application::KolabApp;
+use crate::circuit::actor::MoveActor;
+use crate::circuit::components::capacitor::Capacitor;
+use crate::circuit::components::inductor::Inductor;
+use crate::circuit::components::resistor::Resistor;
+use crate::circuit::Component;
 use serde_json::Value;
 use wasm_bindgen_futures::spawn_local;
-use crate::application::KolabApp;
-use crate::circuit;
 
-pub fn show(ctx: &egui::Context, app_state: &KolabApp) {
+pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
         egui::menu::bar(ui, |ui| {
             egui::widgets::global_theme_preference_buttons(ui);
@@ -12,19 +16,29 @@ pub fn show(ctx: &egui::Context, app_state: &KolabApp) {
         ui.horizontal(|ui| {
             if ui.button("Resistor").clicked() {
                 log::info!("Adding a resistor to the store");
-                let resistor = Box::new(circuit::Resistor::new());
+
+                // TODO: Make this nicer by moving into a begin function for the component
+                let resistor = Box::new(Resistor::new());
+                let actor = Box::new(MoveActor::new(
+                    app_state.gui_ctx.clone(),
+                    app_state.components_store.clone(),
+                    resistor.id(),
+                ));
+
+                app_state.active_actor.replace(Some(actor));
+
                 app_state.components_store.write().upsert(resistor);
             }
 
             if ui.button("Capacitor").clicked() {
                 log::info!("Adding a capacitor to the store");
-                let capacitor = Box::new(circuit::Capacitor::new());
+                let capacitor = Box::new(Capacitor::new());
                 app_state.components_store.write().upsert(capacitor);
             }
 
             if ui.button("Inductor").clicked() {
                 log::info!("Adding a inductor to the store");
-                let inductor = Box::new(circuit::Inductor::new());
+                let inductor = Box::new(Inductor::new());
                 app_state.components_store.write().upsert(inductor);
             }
 
@@ -37,7 +51,7 @@ pub fn show(ctx: &egui::Context, app_state: &KolabApp) {
             }
 
             ui.add(egui::Separator::default().vertical());
-            
+
             if ui.button("Test Ping server").clicked() {
                 // TODO: Wipish just to test it
                 let message_clone = app_state.message.clone();
@@ -64,7 +78,7 @@ pub fn show(ctx: &egui::Context, app_state: &KolabApp) {
 pub async fn make_http_request() -> Result<String, reqwest::Error> {
     let body = reqwest::get("http://127.0.0.1:9090/").await?.text().await?;
     let json: Value = serde_json::from_str(&body).unwrap();
-    
+
     println!("Received: {}", json);
 
     Ok(json["text"].to_string())
