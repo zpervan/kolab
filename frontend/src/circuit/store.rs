@@ -24,4 +24,8 @@ impl CircuitStore {
     pub fn get_mut(&mut self, id: &Uuid) -> Option<&mut Box<dyn Component>> {
         self.components.get_mut(id)
     }
+
+    pub fn components(&self) -> Vec<&Box<dyn Component>> {
+        self.components.iter().map(|(_, c)| c).collect()
+    }
 }

@@ -22,6 +22,8 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
         .show(ctx, |ui| {
             grid(ui);
 
+            // TODO: Putting down tiles is just WIPish for testing purposes
+            // Add actual component icons
             if let Some(active_actor) = app_state.active_actor.get_mut() {
                 if let Some(move_actor) = active_actor.downcast_ref::<MoveActor>() {
                     if let Some(comp) = app_state
@@ -45,6 +47,22 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
                     }
                 }
             }
+            
+            for comp in app_state.components_store.read().components() {
+                let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
+
+                let max = Pos2::new(
+                    comp.position().unwrap().x + 50.0,
+                    comp.position().unwrap().y + 50.0,
+                );
+
+                let dummy_component_size = Rect { min, max };
+                ui.painter().rect_filled(
+                    dummy_component_size,
+                    CornerRadius::ZERO,
+                    Color32::DARK_RED,
+                );
+            }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
                 egui::warn_if_debug_build(ui);
@@ -52,6 +70,7 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
         });
 }
 
+// TODO: Create the grid and setup or initialization
 fn grid(ui: &mut egui::Ui) {
     let canvas_size = ui.available_rect_before_wrap().scale_from_center(0.85);
 
