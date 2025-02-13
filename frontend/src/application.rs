@@ -1,4 +1,3 @@
-use crate::circuit::actor::Actor;
 use crate::circuit::store::CircuitStore;
 use crate::gui;
 use egui::mutex::RwLock;

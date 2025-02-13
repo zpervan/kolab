@@ -1,4 +1,3 @@
-use crate::circuit::actor::Actor;
 use crate::circuit::Component;
 use egui::Vec2;
 use uuid::Uuid;

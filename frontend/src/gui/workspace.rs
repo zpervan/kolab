@@ -1,5 +1,4 @@
 use crate::application::KolabApp;
-use crate::circuit::actor;
 use crate::circuit::actor::{Actor, MoveActor};
 use eframe::epaint::{Color32, Pos2, Stroke};
 use egui::{CornerRadius, Rect};
@@ -11,8 +10,9 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     if let Some(actor) = app_state.active_actor.get_mut() {
         if let Some(actor) = actor.downcast_ref::<MoveActor>() {
             if !actor.act() {
-                log::info!("Actor is no longer in active actor");
+                log::info!("Actor is no longer active");
                 actor.end();
+                app_state.active_actor.replace(None);
             }
         }
     }
