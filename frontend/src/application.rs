@@ -17,6 +17,8 @@ pub struct KolabApp {
 impl KolabApp {
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        egui_extras::install_image_loaders(&cc.egui_ctx);
+        
         Self {
             components_store: Arc::new(RwLock::new(CircuitStore::new())),
             message: Arc::new(Mutex::new(String::from("Waiting for message..."))),

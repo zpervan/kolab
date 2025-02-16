@@ -1,15 +1,18 @@
 use super::Component;
+use serde_json::de::IoRead;
 use std::collections::HashMap;
 use uuid::Uuid;
 
 pub struct CircuitStore {
     components: HashMap<Uuid, Box<dyn Component>>,
+    pending_component_id: Option<Uuid>,
 }
 
 impl CircuitStore {
     pub fn new() -> Self {
         Self {
             components: HashMap::new(),
+            pending_component_id: None,
         }
     }
 
@@ -27,5 +30,13 @@ impl CircuitStore {
 
     pub fn components(&self) -> Vec<&Box<dyn Component>> {
         self.components.iter().map(|(_, c)| c).collect()
+    }
+
+    pub fn set_pending_component_id(&mut self, id: Uuid) {
+        self.pending_component_id = Some(id);
+    }
+    
+    pub fn pending_component_id(&self) -> Option<Uuid> {
+        self.pending_component_id
     }
 }

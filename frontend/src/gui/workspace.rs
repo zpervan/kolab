@@ -1,5 +1,6 @@
 use crate::application::KolabApp;
 use crate::circuit::actor::{Actor, MoveActor};
+use crate::gui::assets::RESISTOR;
 use eframe::epaint::{Color32, Pos2, Stroke};
 use egui::{CornerRadius, Rect};
 
@@ -34,34 +35,26 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
                         let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
 
                         let max = Pos2::new(
-                            comp.position().unwrap().x + 50.0,
-                            comp.position().unwrap().y + 50.0,
+                            comp.position().unwrap().x + 100.0,
+                            comp.position().unwrap().y + 25.0,
                         );
 
-                        let dummy_component_size = Rect { min, max };
-                        ui.painter().rect_filled(
-                            dummy_component_size,
-                            CornerRadius::ZERO,
-                            Color32::DARK_RED,
-                        );
+                        egui::Image::new(RESISTOR.clone()).paint_at(ui, Rect { min, max });
                     }
                 }
             }
-            
+
             for comp in app_state.components_store.read().components() {
+                // TODO: Skip pending components, otherwise component duplication appears
+                
                 let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
 
                 let max = Pos2::new(
-                    comp.position().unwrap().x + 50.0,
-                    comp.position().unwrap().y + 50.0,
+                    comp.position().unwrap().x + 100.0,
+                    comp.position().unwrap().y + 25.0,
                 );
 
-                let dummy_component_size = Rect { min, max };
-                ui.painter().rect_filled(
-                    dummy_component_size,
-                    CornerRadius::ZERO,
-                    Color32::DARK_RED,
-                );
+                egui::Image::new(RESISTOR.clone()).paint_at(ui, Rect { min, max });
             }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
