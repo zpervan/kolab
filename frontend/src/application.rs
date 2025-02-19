@@ -1,3 +1,4 @@
+use crate::circuit::actor::{Actor, MoveActor};
 use crate::circuit::store::CircuitStore;
 use crate::gui;
 use egui::mutex::RwLock;
@@ -18,7 +19,7 @@ impl KolabApp {
     /// Called once before the first frame.
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         egui_extras::install_image_loaders(&cc.egui_ctx);
-        
+
         Self {
             components_store: Arc::new(RwLock::new(CircuitStore::new())),
             message: Arc::new(Mutex::new(String::from("Waiting for message..."))),
@@ -31,6 +32,16 @@ impl KolabApp {
 impl eframe::App for KolabApp {
     /// Called each time the UI needs repainting, which may be many times per second.
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // TODO: Improve the actor handling - include begin
+        if let Some(actor) = self.active_actor.get_mut() {
+            if let Some(actor) = actor.downcast_ref::<MoveActor>() {
+                if !actor.act() {
+                    actor.end();
+                    self.active_actor.replace(None);
+                }
+            }
+        }
+
         gui::top_menu_bar::show(ctx, self);
         gui::workspace::show(ctx, self);
     }

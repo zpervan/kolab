@@ -17,17 +17,21 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
             if ui.button("Resistor").clicked() {
                 log::info!("Adding a resistor to the store");
 
-                // TODO: Make this nicer by moving into a begin function for the component
-                let resistor = Box::new(Resistor::new());
+                let resistor =
+                    Box::new(Resistor::new(ctx.pointer_interact_pos().unwrap().to_vec2()));
+
                 let actor = Box::new(MoveActor::new(
                     app_state.gui_ctx.clone(),
                     app_state.components_store.clone(),
                     resistor.id(),
                 ));
 
-                app_state.active_actor.replace(Some(actor));
+                app_state
+                    .components_store
+                    .write()
+                    .set_pending_component(resistor);
 
-                app_state.components_store.write().upsert(resistor);
+                app_state.active_actor.replace(Some(actor));
             }
 
             if ui.button("Capacitor").clicked() {

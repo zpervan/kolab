@@ -7,46 +7,24 @@ use egui::{CornerRadius, Rect};
 pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     let workspace_bg = egui::containers::Frame::new().fill(Color32::LIGHT_GRAY);
 
-    // TODO: Change this to something more generic, for now it's fine
-    if let Some(actor) = app_state.active_actor.get_mut() {
-        if let Some(actor) = actor.downcast_ref::<MoveActor>() {
-            if !actor.act() {
-                log::info!("Actor is no longer active");
-                actor.end();
-                app_state.active_actor.replace(None);
-            }
-        }
-    }
-
     egui::CentralPanel::default()
         .frame(workspace_bg)
         .show(ctx, |ui| {
             grid(ui);
 
             // TODO: Putting down tiles is just WIPish for testing purposes
-            // Add actual component icons
-            if let Some(active_actor) = app_state.active_actor.get_mut() {
-                if let Some(move_actor) = active_actor.downcast_ref::<MoveActor>() {
-                    if let Some(comp) = app_state
-                        .components_store
-                        .read()
-                        .get(move_actor.component_id)
-                    {
-                        let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
+            if let Some(comp) = app_state.components_store.read().pending_component() {
+                let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
 
-                        let max = Pos2::new(
-                            comp.position().unwrap().x + 100.0,
-                            comp.position().unwrap().y + 25.0,
-                        );
+                let max = Pos2::new(
+                    comp.position().unwrap().x + 100.0,
+                    comp.position().unwrap().y + 25.0,
+                );
 
-                        egui::Image::new(RESISTOR.clone()).paint_at(ui, Rect { min, max });
-                    }
-                }
+                egui::Image::new(RESISTOR.clone()).paint_at(ui, Rect { min, max });
             }
 
             for comp in app_state.components_store.read().components() {
-                // TODO: Skip pending components, otherwise component duplication appears
-                
                 let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
 
                 let max = Pos2::new(
