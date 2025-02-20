@@ -1,11 +1,11 @@
 use crate::application::KolabApp;
-use crate::circuit::actor::{Actor, MoveActor};
 use crate::gui::assets::RESISTOR;
 use eframe::epaint::{Color32, Pos2, Stroke};
-use egui::{CornerRadius, Rect};
+use egui::{CornerRadius, Rect, StrokeKind};
 
 pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     let workspace_bg = egui::containers::Frame::new().fill(Color32::LIGHT_GRAY);
+    let maybe_pointer_pos = ctx.pointer_interact_pos();
 
     egui::CentralPanel::default()
         .frame(workspace_bg)
@@ -14,25 +14,24 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
 
             // TODO: Putting down tiles is just WIPish for testing purposes
             if let Some(comp) = app_state.components_store.read().pending_component() {
-                let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
-
-                let max = Pos2::new(
-                    comp.position().unwrap().x + 100.0,
-                    comp.position().unwrap().y + 25.0,
-                );
-
-                egui::Image::new(RESISTOR.clone()).paint_at(ui, Rect { min, max });
+                egui::Image::new(RESISTOR.clone()).paint_at(ui, comp.bounds());
             }
 
             for comp in app_state.components_store.read().components() {
-                let min = Pos2::new(comp.position().unwrap().x, comp.position().unwrap().y);
+                if let Some(pointer_pos) = maybe_pointer_pos {
+                    if comp.is_hit(pointer_pos) {
+                        let stroke = Stroke::new(1.0, Color32::DARK_RED);
 
-                let max = Pos2::new(
-                    comp.position().unwrap().x + 100.0,
-                    comp.position().unwrap().y + 25.0,
-                );
+                        ui.painter().rect_stroke(
+                            comp.bounds(),
+                            CornerRadius::ZERO,
+                            stroke,
+                            StrokeKind::Outside,
+                        );
+                    }
+                }
 
-                egui::Image::new(RESISTOR.clone()).paint_at(ui, Rect { min, max });
+                egui::Image::new(RESISTOR.clone()).paint_at(ui, comp.bounds());
             }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {

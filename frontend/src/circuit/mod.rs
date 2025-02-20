@@ -2,7 +2,8 @@ pub mod actor;
 pub mod components;
 pub mod store;
 
-use egui::Vec2;
+use eframe::emath::Pos2;
+use egui::{Rect, Vec2};
 use uuid::Uuid;
 
 pub trait Component {
@@ -12,7 +13,11 @@ pub trait Component {
 
     fn value(&self) -> Option<f32>;
 
-    fn set_position(&mut self, pos: Vec2);
+    fn set_position(&mut self, pos: Pos2);
 
-    fn position(&self) -> Option<Vec2>;
+    fn position(&self) -> Pos2;
+
+    fn bounds(&self) -> Rect;
+
+    fn is_hit(&self, pos: Pos2) -> bool;
 }

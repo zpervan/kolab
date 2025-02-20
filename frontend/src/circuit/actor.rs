@@ -50,7 +50,7 @@ impl Actor for MoveActor {
         let mut store = self.store.write();
         if let Some(component) = store.pending_component_mut() {
             if let Some(pointer_pos) = self.gui_ctx.pointer_interact_pos() {
-                component.set_position(pointer_pos.to_vec2());
+                component.set_position(pointer_pos);
                 return true;
             }
         }

@@ -1,19 +1,22 @@
+use crate::circuit::components::DEFAULT_COMPONENT_SIZE;
 use crate::circuit::Component;
-use egui::Vec2;
+use eframe::emath::Rect;
+use egui::Pos2;
+use std::ops::Add;
 use uuid::Uuid;
 
 pub struct Capacitor {
     id: Uuid,
     value: Option<f32>,
-    position: Option<Vec2>,
+    position: Pos2,
 }
 
 impl Capacitor {
-    pub fn new() -> Self {
+    pub fn new(initial_position: Pos2) -> Self {
         Self {
             id: Uuid::new_v4(),
             value: None,
-            position: None,
+            position: initial_position,
         }
     }
 }
@@ -31,11 +34,22 @@ impl Component for Capacitor {
         self.value
     }
 
-    fn set_position(&mut self, pos: Vec2) {
-        self.position = Some(pos);
+    fn set_position(&mut self, pos: Pos2) {
+        self.position = pos;
     }
 
-    fn position(&self) -> Option<Vec2> {
+    fn position(&self) -> Pos2 {
         self.position
+    }
+
+    fn bounds(&self) -> Rect {
+        Rect {
+            min: self.position,
+            max: self.position.add(DEFAULT_COMPONENT_SIZE),
+        }
+    }
+
+    fn is_hit(&self, pos: Pos2) -> bool {
+        self.bounds().contains(pos)
     }
 }

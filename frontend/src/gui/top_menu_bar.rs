@@ -17,8 +17,7 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
             if ui.button("Resistor").clicked() {
                 log::info!("Adding a resistor to the store");
 
-                let resistor =
-                    Box::new(Resistor::new(ctx.pointer_interact_pos().unwrap().to_vec2()));
+                let resistor = Box::new(Resistor::new(ctx.pointer_interact_pos().unwrap()));
 
                 let actor = Box::new(MoveActor::new(
                     app_state.gui_ctx.clone(),
@@ -36,13 +35,13 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
 
             if ui.button("Capacitor").clicked() {
                 log::info!("Adding a capacitor to the store");
-                let capacitor = Box::new(Capacitor::new());
+                let capacitor = Box::new(Capacitor::new(ctx.pointer_interact_pos().unwrap()));
                 app_state.components_store.write().upsert(capacitor);
             }
 
             if ui.button("Inductor").clicked() {
                 log::info!("Adding a inductor to the store");
-                let inductor = Box::new(Inductor::new());
+                let inductor = Box::new(Inductor::new(ctx.pointer_interact_pos().unwrap()));
                 app_state.components_store.write().upsert(inductor);
             }
 
