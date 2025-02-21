@@ -1,5 +1,5 @@
-use crate::circuit::components::DEFAULT_COMPONENT_SIZE;
-use crate::circuit::Component;
+use crate::circuit::components::RESISTOR_COMPONENT_SIZE;
+use crate::circuit::{Component, ComponentType};
 use eframe::emath::{Pos2, Rect};
 use std::ops::Add;
 use uuid::Uuid;
@@ -25,6 +25,10 @@ impl Component for Inductor {
         self.id
     }
 
+    fn component_type(&self) -> ComponentType {
+        ComponentType::Inductor
+    }
+
     fn set_value(&mut self, value: f32) {
         self.value = Some(value);
     }
@@ -44,7 +48,7 @@ impl Component for Inductor {
     fn bounds(&self) -> Rect {
         Rect {
             min: self.position,
-            max: self.position.add(DEFAULT_COMPONENT_SIZE),
+            max: self.position.add(RESISTOR_COMPONENT_SIZE),
         }
     }
 

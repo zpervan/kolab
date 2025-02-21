@@ -1,6 +1,6 @@
-use crate::circuit::components::DEFAULT_COMPONENT_SIZE;
-use crate::circuit::Component;
-use egui::{Pos2, Rect, Vec2};
+use crate::circuit::components::RESISTOR_COMPONENT_SIZE;
+use crate::circuit::{Component, ComponentType};
+use egui::{Pos2, Rect};
 use std::ops::Add;
 use uuid::Uuid;
 
@@ -25,6 +25,10 @@ impl Component for Resistor {
         self.id
     }
 
+    fn component_type(&self) -> ComponentType {
+        ComponentType::Resistor
+    }
+
     fn set_value(&mut self, value: f32) {
         self.value = Some(value);
     }
@@ -44,7 +48,7 @@ impl Component for Resistor {
     fn bounds(&self) -> Rect {
         Rect {
             min: self.position,
-            max: self.position.add(DEFAULT_COMPONENT_SIZE),
+            max: self.position.add(RESISTOR_COMPONENT_SIZE),
         }
     }
 

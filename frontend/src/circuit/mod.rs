@@ -3,11 +3,20 @@ pub mod components;
 pub mod store;
 
 use eframe::emath::Pos2;
-use egui::{Rect, Vec2};
+use egui::Rect;
 use uuid::Uuid;
+
+#[derive(Copy, Clone)]
+pub enum ComponentType {
+    Resistor,
+    Capacitor,
+    Inductor,
+}
 
 pub trait Component {
     fn id(&self) -> Uuid;
+
+    fn component_type(&self) -> ComponentType;
 
     fn set_value(&mut self, value: f32);
 

@@ -1,6 +1,8 @@
 use crate::application::KolabApp;
 use crate::circuit::actor::MoveComponentActor;
-use crate::gui::assets::RESISTOR;
+use crate::circuit::Component;
+use crate::circuit::ComponentType;
+use crate::gui::assets::{CAPACITOR_NON_POLARISED, INDUCTOR, RESISTOR};
 use eframe::epaint::{Color32, Pos2, Stroke};
 use egui::{CornerRadius, StrokeKind};
 
@@ -14,7 +16,7 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
             grid(ui);
 
             if let Some(comp) = app_state.components_store.read().pending_component() {
-                egui::Image::new(RESISTOR.clone()).paint_at(ui, comp.bounds());
+                draw_component(ui, comp);
             }
 
             for comp in app_state.components_store.read().components() {
@@ -41,7 +43,7 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
                     }
                 }
 
-                egui::Image::new(RESISTOR.clone()).paint_at(ui, comp.bounds());
+                draw_component(ui, comp.as_ref());
             }
 
             ui.with_layout(egui::Layout::bottom_up(egui::Align::LEFT), |ui| {
@@ -77,4 +79,18 @@ fn grid(ui: &mut egui::Ui) {
             Stroke::new(1.0, Color32::LIGHT_GRAY),
         );
     }
+}
+
+fn draw_component(ui: &mut egui::Ui, component: &dyn Component) {
+    match component.component_type() {
+        ComponentType::Resistor => {
+            egui::Image::new(RESISTOR.clone()).paint_at(ui, component.bounds());
+        }
+        ComponentType::Capacitor => {
+            egui::Image::new(CAPACITOR_NON_POLARISED.clone()).paint_at(ui, component.bounds());
+        }
+        ComponentType::Inductor => {
+            egui::Image::new(INDUCTOR.clone()).paint_at(ui, component.bounds());
+        }
+    };
 }

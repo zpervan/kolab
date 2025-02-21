@@ -1,6 +1,5 @@
 use crate::circuit::store::CircuitStore;
 use egui::mutex::RwLock;
-use log::info;
 use std::cell::Cell;
 use std::sync::Arc;
 use uuid::Uuid;

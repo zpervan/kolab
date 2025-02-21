@@ -1,5 +1,5 @@
-use crate::circuit::components::DEFAULT_COMPONENT_SIZE;
-use crate::circuit::Component;
+use crate::circuit::components::CAPACITOR_COMPONENT_SIZE;
+use crate::circuit::{Component, ComponentType};
 use eframe::emath::Rect;
 use egui::Pos2;
 use std::ops::Add;
@@ -26,6 +26,10 @@ impl Component for Capacitor {
         self.id
     }
 
+    fn component_type(&self) -> ComponentType {
+        ComponentType::Capacitor
+    }
+
     fn set_value(&mut self, value: f32) {
         self.value = Some(value);
     }
@@ -45,7 +49,7 @@ impl Component for Capacitor {
     fn bounds(&self) -> Rect {
         Rect {
             min: self.position,
-            max: self.position.add(DEFAULT_COMPONENT_SIZE),
+            max: self.position.add(CAPACITOR_COMPONENT_SIZE),
         }
     }
 

@@ -1,8 +1,7 @@
-use crate::circuit::actor::{Actor, AddComponentActor};
+use crate::circuit::actor::Actor;
 use crate::circuit::store::CircuitStore;
 use crate::gui;
 use egui::mutex::RwLock;
-use std::any::Any;
 use std::cell::Cell;
 use std::sync::{Arc, Mutex};
 
