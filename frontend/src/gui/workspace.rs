@@ -1,7 +1,8 @@
 use crate::application::KolabApp;
+use crate::circuit::actor::MoveComponentActor;
 use crate::gui::assets::RESISTOR;
 use eframe::epaint::{Color32, Pos2, Stroke};
-use egui::{CornerRadius, Rect, StrokeKind};
+use egui::{CornerRadius, StrokeKind};
 
 pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     let workspace_bg = egui::containers::Frame::new().fill(Color32::LIGHT_GRAY);
@@ -12,7 +13,6 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
         .show(ctx, |ui| {
             grid(ui);
 
-            // TODO: Putting down tiles is just WIPish for testing purposes
             if let Some(comp) = app_state.components_store.read().pending_component() {
                 egui::Image::new(RESISTOR.clone()).paint_at(ui, comp.bounds());
             }
@@ -28,6 +28,16 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
                             stroke,
                             StrokeKind::Outside,
                         );
+
+                        if ui.input(|e| e.pointer.primary_pressed()) {
+                            let move_actor = Box::new(MoveComponentActor::new(
+                                app_state.gui_ctx.clone(),
+                                app_state.components_store.clone(),
+                                comp.id(),
+                            ));
+
+                            app_state.active_actor.replace(Some(move_actor));
+                        }
                     }
                 }
 

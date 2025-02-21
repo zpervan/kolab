@@ -1,4 +1,4 @@
-use crate::circuit::actor::{Actor, MoveActor};
+use crate::circuit::actor::{Actor, AddComponentActor};
 use crate::circuit::store::CircuitStore;
 use crate::gui;
 use egui::mutex::RwLock;
@@ -12,7 +12,7 @@ pub struct KolabApp {
     pub gui_ctx: Arc<egui::Context>,
     // TODO: Should be removed, just for testing
     pub message: Arc<Mutex<String>>,
-    pub active_actor: Cell<Option<Box<dyn Any>>>,
+    pub active_actor: Cell<Option<Box<dyn Actor>>>,
 }
 
 impl KolabApp {
@@ -34,11 +34,9 @@ impl eframe::App for KolabApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         // TODO: Improve the actor handling - include begin
         if let Some(actor) = self.active_actor.get_mut() {
-            if let Some(actor) = actor.downcast_ref::<MoveActor>() {
-                if !actor.act() {
-                    actor.end();
-                    self.active_actor.replace(None);
-                }
+            if !actor.act() {
+                actor.end();
+                self.active_actor.replace(None);
             }
         }
 

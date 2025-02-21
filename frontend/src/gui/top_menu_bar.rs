@@ -1,5 +1,5 @@
 use crate::application::KolabApp;
-use crate::circuit::actor::MoveActor;
+use crate::circuit::actor::AddComponentActor;
 use crate::circuit::components::capacitor::Capacitor;
 use crate::circuit::components::inductor::Inductor;
 use crate::circuit::components::resistor::Resistor;
@@ -19,7 +19,7 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
 
                 let resistor = Box::new(Resistor::new(ctx.pointer_interact_pos().unwrap()));
 
-                let actor = Box::new(MoveActor::new(
+                let actor = Box::new(AddComponentActor::new(
                     app_state.gui_ctx.clone(),
                     app_state.components_store.clone(),
                     resistor.id(),

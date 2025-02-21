@@ -17,14 +17,14 @@ pub trait Actor {
     }
 }
 
-pub struct MoveActor {
+pub struct AddComponentActor {
     gui_ctx: Arc<egui::Context>,
     store: Arc<RwLock<CircuitStore>>,
     pub component_id: Uuid,
     pub is_placing: Cell<bool>,
 }
 
-impl MoveActor {
+impl AddComponentActor {
     pub fn new(
         gui_ctx: Arc<egui::Context>,
         store: Arc<RwLock<CircuitStore>>,
@@ -39,10 +39,9 @@ impl MoveActor {
     }
 }
 
-impl Actor for MoveActor {
+impl Actor for AddComponentActor {
     fn act(&self) -> bool {
         if self.gui_ctx.input(|i| i.pointer.primary_clicked()) && self.is_placing.get() {
-            info!("Move actor - act - Is placing: FINISHED");
             self.is_placing.replace(false);
             return false;
         }
@@ -59,10 +58,44 @@ impl Actor for MoveActor {
     }
 
     fn end(&self) -> bool {
-        info!("Move actor - end");
         let mut store = self.store.write();
         if let Some(component) = store.clear_pending_component() {
             store.upsert(component);
+        }
+
+        true
+    }
+}
+
+pub struct MoveComponentActor {
+    gui_ctx: Arc<egui::Context>,
+    store: Arc<RwLock<CircuitStore>>,
+    pub component_id: Uuid,
+}
+
+impl MoveComponentActor {
+    pub fn new(
+        gui_ctx: Arc<egui::Context>,
+        store: Arc<RwLock<CircuitStore>>,
+        component_id: Uuid,
+    ) -> Self {
+        Self {
+            gui_ctx,
+            store,
+            component_id,
+        }
+    }
+}
+
+impl Actor for MoveComponentActor {
+    fn act(&self) -> bool {
+        if self.gui_ctx.input(|e| e.pointer.primary_released()) {
+            return false;
+        }
+
+        if let Some(comp) = self.store.write().get_mut(&self.component_id) {
+            let pointer_pos = self.gui_ctx.pointer_interact_pos().unwrap();
+            comp.set_position(pointer_pos);
         }
 
         true

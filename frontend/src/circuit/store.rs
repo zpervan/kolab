@@ -28,7 +28,7 @@ impl CircuitStore {
     }
 
     pub fn components(&self) -> Vec<&Box<dyn Component>> {
-        self.components.iter().map(|(_, c)| c).collect()
+        self.components.values().collect()
     }
 
     pub fn set_pending_component(&mut self, component: Box<dyn Component>) {
