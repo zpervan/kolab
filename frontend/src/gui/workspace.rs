@@ -1,10 +1,10 @@
 use crate::application::KolabApp;
 use crate::circuit::actor::MoveComponentActor;
-use crate::circuit::Component;
 use crate::circuit::ComponentType;
+use crate::circuit::{Component, ComponentHitRegion, TerminalBounds};
 use crate::gui::assets::{CAPACITOR_NON_POLARISED, INDUCTOR, RESISTOR};
 use eframe::epaint::{Color32, Pos2, Stroke};
-use egui::{CornerRadius, StrokeKind};
+use egui::{CornerRadius, CursorIcon, StrokeKind};
 
 pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     let workspace_bg = egui::containers::Frame::new().fill(Color32::LIGHT_GRAY);
@@ -21,17 +21,31 @@ pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
 
             for comp in app_state.components_store.read().components() {
                 if let Some(pointer_pos) = maybe_pointer_pos {
-                    if comp.is_hit(pointer_pos) {
-                        let stroke = Stroke::new(1.0, Color32::DARK_RED);
+                    if let Some(hit_info) = comp.hit_info(pointer_pos) {
+                        let bounds = match hit_info {
+                            ComponentHitRegion::Terminal(terminal_bounds) => {
+                                ctx.set_cursor_icon(CursorIcon::PointingHand);
+                                match terminal_bounds {
+                                    TerminalBounds::First(first_bounds) => first_bounds,
+                                    TerminalBounds::Second(seconds_bounds) => seconds_bounds,
+                                }
+                            }
+                            ComponentHitRegion::Component(component_bounds) => {
+                                ctx.set_cursor_icon(CursorIcon::Grab);
+                                component_bounds
+                            },
+                        };
 
                         ui.painter().rect_stroke(
-                            comp.bounds(),
+                            bounds,
                             CornerRadius::ZERO,
-                            stroke,
+                            Stroke::new(1.0, Color32::DARK_RED),
                             StrokeKind::Outside,
                         );
 
                         if ui.input(|e| e.pointer.primary_pressed()) {
+                            // TODO: The grabbing icon is not shown
+                            // ctx.set_cursor_icon(CursorIcon::Grabbing);
                             let move_actor = Box::new(MoveComponentActor::new(
                                 app_state.gui_ctx.clone(),
                                 app_state.components_store.clone(),
@@ -82,15 +96,16 @@ fn grid(ui: &mut egui::Ui) {
 }
 
 fn draw_component(ui: &mut egui::Ui, component: &dyn Component) {
+    let bounds = component.bounds_component();
     match component.component_type() {
         ComponentType::Resistor => {
-            egui::Image::new(RESISTOR.clone()).paint_at(ui, component.bounds());
+            egui::Image::new(RESISTOR.clone()).paint_at(ui, bounds);
         }
         ComponentType::Capacitor => {
-            egui::Image::new(CAPACITOR_NON_POLARISED.clone()).paint_at(ui, component.bounds());
+            egui::Image::new(CAPACITOR_NON_POLARISED.clone()).paint_at(ui, bounds);
         }
         ComponentType::Inductor => {
-            egui::Image::new(INDUCTOR.clone()).paint_at(ui, component.bounds());
+            egui::Image::new(INDUCTOR.clone()).paint_at(ui, bounds);
         }
     };
 }

@@ -45,14 +45,10 @@ impl Component for Resistor {
         self.position
     }
 
-    fn bounds(&self) -> Rect {
+    fn bounds_component(&self) -> Rect {
         Rect {
             min: self.position,
             max: self.position.add(RESISTOR_COMPONENT_SIZE),
         }
-    }
-
-    fn is_hit(&self, pos: Pos2) -> bool {
-        self.bounds().contains(pos)
     }
 }

@@ -2,6 +2,7 @@ use super::Component;
 use std::collections::HashMap;
 use uuid::Uuid;
 
+#[derive(Default)]
 pub struct CircuitStore {
     components: HashMap<Uuid, Box<dyn Component>>,
     pending_component: Option<Box<dyn Component>>,
@@ -9,10 +10,7 @@ pub struct CircuitStore {
 
 impl CircuitStore {
     pub fn new() -> Self {
-        Self {
-            components: HashMap::new(),
-            pending_component: None,
-        }
+        Default::default()
     }
 
     pub fn upsert(&mut self, component: Box<dyn Component>) {

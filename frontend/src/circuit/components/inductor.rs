@@ -1,4 +1,4 @@
-use crate::circuit::components::RESISTOR_COMPONENT_SIZE;
+use crate::circuit::components::CAPACITOR_COMPONENT_SIZE;
 use crate::circuit::{Component, ComponentType};
 use eframe::emath::{Pos2, Rect};
 use std::ops::Add;
@@ -45,14 +45,10 @@ impl Component for Inductor {
         self.position
     }
 
-    fn bounds(&self) -> Rect {
+    fn bounds_component(&self) -> Rect {
         Rect {
             min: self.position,
-            max: self.position.add(RESISTOR_COMPONENT_SIZE),
+            max: self.position.add(CAPACITOR_COMPONENT_SIZE),
         }
-    }
-
-    fn is_hit(&self, pos: Pos2) -> bool {
-        self.bounds().contains(pos)
     }
 }

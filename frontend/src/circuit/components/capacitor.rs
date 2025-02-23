@@ -46,14 +46,10 @@ impl Component for Capacitor {
         self.position
     }
 
-    fn bounds(&self) -> Rect {
+    fn bounds_component(&self) -> Rect {
         Rect {
             min: self.position,
             max: self.position.add(CAPACITOR_COMPONENT_SIZE),
         }
-    }
-
-    fn is_hit(&self, pos: Pos2) -> bool {
-        self.bounds().contains(pos)
     }
 }
