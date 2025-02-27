@@ -100,3 +100,29 @@ impl Actor for MoveComponentActor {
         true
     }
 }
+
+pub struct LinkComponentActor {
+    gui_ctx: Arc<egui::Context>,
+    store: Arc<RwLock<CircuitStore>>,
+}
+
+impl LinkComponentActor {
+    pub fn new(
+        gui_ctx: Arc<egui::Context>,
+        store: Arc<RwLock<CircuitStore>>,
+        component_id: Uuid,
+    ) -> Self {
+        Self {
+            gui_ctx,
+            store,
+        }
+    }
+}
+
+impl Actor for LinkComponentActor {
+    fn act(&self) -> bool {
+        // TODO: add linking functionality
+
+        true
+    }
+}

@@ -3,9 +3,9 @@ use crate::circuit::actor::AddComponentActor;
 use crate::circuit::components::capacitor::Capacitor;
 use crate::circuit::components::inductor::Inductor;
 use crate::circuit::components::resistor::Resistor;
-use crate::circuit::{Component, ComponentType};
 use serde_json::Value;
 use wasm_bindgen_futures::spawn_local;
+use crate::circuit::components::{Component, ComponentType};
 
 pub fn show(ctx: &egui::Context, app_state: &mut KolabApp) {
     egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {

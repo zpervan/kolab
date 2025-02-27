@@ -1,4 +1,5 @@
-use super::Component;
+use crate::circuit::components::Component;
+use crate::circuit::{ComponentId, TerminalId};
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -6,6 +7,7 @@ use uuid::Uuid;
 pub struct CircuitStore {
     components: HashMap<Uuid, Box<dyn Component>>,
     pending_component: Option<Box<dyn Component>>,
+    connections: petgraph::Graph<TerminalId, ComponentId>,
 }
 
 impl CircuitStore {
@@ -46,5 +48,13 @@ impl CircuitStore {
 
     pub fn pending_component_mut(&mut self) -> Option<&mut Box<dyn Component>> {
         self.pending_component.as_mut()
+    }
+
+    pub fn add_connection(&mut self, start_component_id: ComponentId, end_component_id: ComponentId) {
+        // TODO: add functionality
+    }
+    
+    pub fn remove_connection(&mut self) {
+        // TODO: add functionality
     }
 }

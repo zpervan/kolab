@@ -1,5 +1,4 @@
-use crate::circuit::components::RESISTOR_COMPONENT_SIZE;
-use crate::circuit::{Component, ComponentType};
+use crate::circuit::components::{Component, ComponentType, RESISTOR_COMPONENT_SIZE};
 use egui::{Pos2, Rect};
 use std::ops::Add;
 use uuid::Uuid;

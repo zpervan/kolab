@@ -1,5 +1,4 @@
-use crate::circuit::components::CAPACITOR_COMPONENT_SIZE;
-use crate::circuit::{Component, ComponentType};
+use crate::circuit::components::{Component, ComponentType, CAPACITOR_COMPONENT_SIZE};
 use eframe::emath::Rect;
 use egui::Pos2;
 use std::ops::Add;
