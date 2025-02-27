@@ -1,7 +1,6 @@
 use crate::application::KolabApp;
 use crate::circuit::actor::MoveComponentActor;
-use crate::circuit::ComponentType;
-use crate::circuit::{Component, ComponentHitRegion, TerminalBounds};
+use crate::circuit::components::{Component, ComponentHitRegion, ComponentType, TerminalBounds};
 use crate::gui::assets::{CAPACITOR_NON_POLARISED, INDUCTOR, RESISTOR};
 use eframe::epaint::{Color32, Pos2, Stroke};
 use egui::{CornerRadius, CursorIcon, StrokeKind};
