@@ -1,0 +1,45 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+#  RUSTFLAGS: "-Dwarnings"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+# TODO: Enable once the code is more mature (less WIP and experimental)
+#      - name: Clippy | Frontend
+#        run: |
+#          cd frontend
+#          cargo clippy --all-targets --all-features
+
+      - uses: jetli/trunk-action@v0.5.0
+        with:
+          version: 'latest'
+
+      - name: Add wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Build | Frontend
+        working-directory: ./frontend
+        run: trunk build --verbose
+# TODO: Enable once the code is more mature (less WIP and experimental)
+#      - name: Clippy | Backend
+#        run: |
+#          cd backend
+#          cargo clippy --all-targets --all-features
+
+      - name: Build | Backend
+        working-directory: ./backend
+        run: cargo build --verbose
+
